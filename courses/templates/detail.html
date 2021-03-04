@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load get_model_name_from_template %}
+{% block content %}
+    <h1>{{ instance.name }}</h1><br>
+    {% if model_name == 'course' %}
+        {% include 'courses_part.html' %}
+    {% elif model_name == 'specialization' %}
+        {% include 'specialization_part.html' %}
+    {% else %}
+        {% include 'school_part.html' %}
+    {% endif %}
+{% endblock %}

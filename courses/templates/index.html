@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if courses %}
+        {% for course in courses %}
+            <a href="{{ course.get_absolute_url }}">{{ course }}</a><br>
+        {% endfor %}
+    {% else %}
+        Пока нет курсов
+    {% endif %}
+<hr>
+    {% if schools %}
+        {% for school in schools %}
+            <a href="{{ school.get_absolute_url }}">{{ school }}</a><br>
+        {% endfor %}
+    {% else %}
+        Пока нет школ
+    {% endif %}
+<hr>
+    {% if specializations %}
+        {% for specialization in specializations %}
+            <a href="{{ specialization.get_absolute_url }}">{{ specialization }}</a><br>
+        {% endfor %}
+    {% else %}
+        Пока нет специализаций
+    {% endif %}
+
+
+{% endblock %}

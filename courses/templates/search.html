@@ -1,0 +1,8 @@
+{% if courses %}
+{% for course in courses %}
+    <a href="{{ course.get_absolute_url }}"><b>{{ course }}</b>
+    {% if course.which_school %}{{ course.which_school }}{% endif %}<br>
+{% endfor %}
+{% else %}
+     Ничего нет
+{% endif %}

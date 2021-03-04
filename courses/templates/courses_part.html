@@ -1,0 +1,15 @@
+<img src="{{ instance.photo.url }}" height="100"><br>
+Школа курса: {{ instance.which_school }}<br>
+Цена курса: {{ instance.price }}<br>
+Дата начала: {{ instance.start_date }}<br>
+Длительность курса: {{ instance.duration }} месяцев<br>
+Специальности курса:
+{% for i in instance.school_spec.all %}
+    <a href="{{ i.get_absolute_url }}">{{ i }}</a>
+{% endfor %}<br>
+Описание курса:<br>
+{{ instance.course_description }}<br>
+Наличие диплома: {% if instance.diplome %}Есть{% else %} Отсутствует {% endif %}
+<p>{{ instance.course_programm }}</p><br>
+
+

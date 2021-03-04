@@ -1,0 +1,13 @@
+<img src="{{ instance.logo.url }}" height="100"><br>
+<h3>Специализации школы</h3>
+{% for i in instance.school_spec.all %}
+    <a href="{{ i.get_absolute_url }}">{{ i }}</a>
+{% endfor %}<br>
+{{ instance.spec }}<br>
+Рейтинг школы:{{ instance.rating }}<br>
+<h3>Доступные курсы:</h3>
+<ul>
+{% for course in instance.courses.all %}
+    <li><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
+{% endfor %}
+</ul>

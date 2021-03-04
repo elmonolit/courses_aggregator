@@ -1,0 +1,12 @@
+<h3>Доступные курсы:</h3>
+<ul>
+{% for course in instance.courses.all %}
+    <li><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
+{% endfor %}
+</ul>
+<h3>Школы в специализации:</h3>
+<ul>
+{% for school in instance.schools.all %}
+    <li><a href="{{ school.get_absolute_url }}">{{ school }}</a></li>
+{% endfor %}
+</ul>
