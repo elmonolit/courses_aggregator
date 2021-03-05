@@ -1,6 +1,8 @@
 from django.db import models
 from django.urls import reverse
 
+from django.contrib.auth.models import User
+
 from pytils.translit import slugify
 
 
@@ -23,7 +25,6 @@ class Specialization(models.Model):
             print(s.school_spec)
             s.save()
         # return super().save(*args, **kwargs)
-
 
     def get_absolute_url(self):
         ct = self.__class__.__name__.lower()
@@ -90,3 +91,46 @@ class Course(models.Model):
     class Meta:
         verbose_name = 'Курс'
         verbose_name_plural = 'Курсы'
+
+
+class Review(models.Model):
+    owner = models.ForeignKey('UserProfile', on_delete=models.DO_NOTHING, verbose_name='Кто написал')
+    rating = models.IntegerField()
+    comment = models.CharField(max_length=1000)
+    date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.owner.user.username
+
+    class Meta:
+        abstract = True
+
+
+class SchoolReview(Review):
+    school_review = models.ForeignKey(School, on_delete=models.DO_NOTHING, verbose_name='какая школа')
+
+    class Meta:
+        verbose_name = 'Отзыв о школе'
+        verbose_name_plural = "Отзывы о школе"
+
+
+class CourseReview(Review):
+    course_review = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='какой курс')
+
+    class Meta:
+        verbose_name = 'Отзыв о курсе'
+        verbose_name_plural = 'Отзывы о курсе'
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=True, verbose_name='Имя пользователя')
+    email = models.EmailField(verbose_name='Электронная почта', blank=True)
+    photo = models.ImageField(upload_to='userpics', blank=True)
+
+    def __str__(self):
+        return self.user.username
+
+    class Meta:
+        verbose_name = 'Профиль пользователя'
+        verbose_name_plural = 'Профили пользователей'
