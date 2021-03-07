@@ -30,6 +30,7 @@ class ModelDetail(DetailView):
     def dispatch(self, request, *args, **kwargs):
         self.model = self.CT[kwargs['ct']]
         self.queryset = self.model.objects.all()
+        # self.object.rating_by_review()
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -50,7 +51,6 @@ class Search(View):
             objects_schools = School.objects.filter(name__istartswith=startswith)[:8]
             result.extend(objects_courses)
             result.extend(objects_schools)
-            print(result)
             return result
 
     def get(self, request, *args, **kwargs):

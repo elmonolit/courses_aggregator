@@ -42,16 +42,21 @@ class School(models.Model):
     desciption = models.TextField(verbose_name='Описание школы')
     rating = models.IntegerField(default=5, verbose_name='Рейтинг')
     courses = models.ManyToManyField('Course', verbose_name='Список курсов', blank=True)
-    # reviews = models.ManyToManyField('Review', verbose_name='Отзывы')
-    # discounts
-    # teachers
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     def __str__(self):
         return self.name
 
+    def rating_by_reviews(self):
+        sum_of_reviews_rating = sum([r.rating for r in self.schoolreview_set.all()])
+        number_of_reviews = len(self.schoolreview_set.all())
+        # return sum_of_reviews_rating / number_of_reviews
+        self.rating = sum_of_reviews_rating / number_of_reviews
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
+        # if self.schoolreview_set:
+        #     self.rating = self.rating_by_reviews()
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -108,10 +113,16 @@ class Review(models.Model):
 
 class SchoolReview(Review):
     school_review = models.ForeignKey(School, on_delete=models.DO_NOTHING, verbose_name='какая школа')
+    
+    def save(self,*args,**kwargs):
+        self.school_review.rating_by_reviews()
+        self.school_review.save()
+        return super(SchoolReview, self).save(*args,**kwargs)
 
     class Meta:
         verbose_name = 'Отзыв о школе'
         verbose_name_plural = "Отзывы о школе"
+        
 
 
 class CourseReview(Review):
