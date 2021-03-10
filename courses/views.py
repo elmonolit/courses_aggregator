@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, View, CreateView
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Course, School, Specialization
+from .models import Course, School, Specialization, CourseReview, SchoolReview
+from .forms import SchoolReviewForm, CourseReviewForm, ReviewForm
 
 
 class Index(ListView):
@@ -27,20 +28,42 @@ class ModelDetail(DetailView):
         'course': Course
     }
 
+    context_object_name = 'instance'
+    template_name = 'detail.html'
+    slug_url_kwarg = 'slug'
+
     def dispatch(self, request, *args, **kwargs):
         self.model = self.CT[kwargs['ct']]
         self.queryset = self.model.objects.all()
-        # self.object.rating_by_review()
+        # self.rating_by_review()
         return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if self.model._meta.model_name == 'course':
+            form = CourseReviewForm(request.POST)
+            inst = form.save(commit=False)
+            inst.course_review = self.get_object()
+        elif self.model._meta.model_name == 'school':
+            form = SchoolReviewForm(request.POST)
+            inst = form.save(commit=False)
+            inst.school_review = self.get_object()
+
+        if form.is_valid():
+            # inst = form.save(commit=False)
+            inst.owner = self.request.user.userprofile
+            inst.save()
+            return redirect(self.get_object())
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['model_name'] = self.model._meta.model_name
+        if context['model_name'] == 'course':
+            context['form'] = CourseReviewForm()
+        elif context['model_name'] == 'school':
+            context['form'] = SchoolReviewForm()
+        else:
+            context['form'] = None
         return context
-
-    context_object_name = 'instance'
-    template_name = 'detail.html'
-    slug_url_kwarg = 'slug'
 
 
 class Search(View):

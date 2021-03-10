@@ -1,7 +1,7 @@
 <img src="{{ instance.photo.url }}" height="100"><br>
 Школа курса: {{ instance.which_school }}<br>
 Цена курса: {{ instance.price }}<br>
-Рейтинг: {{ instance.rating }}
+Рейтинг: {{ instance.rating }}<br>
 Дата начала: {{ instance.start_date }}<br>
 Длительность курса: {{ instance.duration }} месяцев<br>
 Специальности курса:
@@ -29,4 +29,10 @@
 
 </div>
 
-
+<div>
+    <form method="post">
+    {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Добавить отзыв">
+    </form>
+</div>

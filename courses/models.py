@@ -39,7 +39,7 @@ class School(models.Model):
     name = models.CharField(max_length=255, verbose_name='Школа')
     logo = models.ImageField(upload_to='school', verbose_name='Логотип школы')
     school_spec = models.ManyToManyField(Specialization, verbose_name='Специализация школы', blank=True)
-    desciption = models.TextField(verbose_name='Описание школы')
+    description = models.TextField(verbose_name='Описание школы')
     rating = models.PositiveSmallIntegerField(default=5, verbose_name='Рейтинг')
     courses = models.ManyToManyField('Course', verbose_name='Список курсов', blank=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
@@ -128,7 +128,7 @@ class SchoolReview(Review):
     class Meta:
         verbose_name = 'Отзыв о школе'
         verbose_name_plural = "Отзывы о школе"
-        unique_together = [['owner','school_review']]
+        # unique_together = [['owner','school_review']]
 
 
 class CourseReview(Review):
@@ -144,7 +144,7 @@ class CourseReview(Review):
     class Meta:
         verbose_name = 'Отзыв о курсе'
         verbose_name_plural = 'Отзывы о курсе'
-        unique_together = [['owner', 'course_review']]
+        # unique_together = [['owner', 'course_review']]
 
 
 class UserProfile(models.Model):

@@ -5,6 +5,8 @@
 {% endfor %}<br>
 {{ instance.spec }}<br>
 Рейтинг школы: {{ instance.rating }}<br>
+<h4>Описание школы</h4>
+{{ instance.desription }}<br>
 <h3>Доступные курсы:</h3>
 <ul>
 {% for course in instance.courses.all %}
@@ -24,4 +26,11 @@
 {% else %}
 Пока нет отзывов
 {% endif %}
+</div>
+<div>
+    <form method="post">
+    {% csrf_token %}
+        {{ form.as_p }}
+    <input type="submit" value="Добавить отзыв">
+    </form>
 </div>
