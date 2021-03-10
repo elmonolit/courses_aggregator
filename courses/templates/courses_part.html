@@ -1,6 +1,7 @@
 <img src="{{ instance.photo.url }}" height="100"><br>
 Школа курса: {{ instance.which_school }}<br>
 Цена курса: {{ instance.price }}<br>
+Рейтинг: {{ instance.rating }}
 Дата начала: {{ instance.start_date }}<br>
 Длительность курса: {{ instance.duration }} месяцев<br>
 Специальности курса:
@@ -11,5 +12,21 @@
 {{ instance.course_description }}<br>
 Наличие диплома: {% if instance.diplome %}Есть{% else %} Отсутствует {% endif %}
 <p>{{ instance.course_programm }}</p><br>
+
+<div class="container-fluid" id="reviews">
+
+    {% if instance.coursereview_set.all %}
+        {% for review in instance.coursereview_set.all %}
+        <b>{{ review.owner }}</b><br>
+        Оценка: {{ review.rating }}<br>
+        {{ review.comment }}<br>
+        <small>{{ review.date }}</small><br>
+        <hr>
+        {% endfor %}
+    {% else %}
+        Пока нет отзывов
+    {% endif %}
+
+</div>
 
 

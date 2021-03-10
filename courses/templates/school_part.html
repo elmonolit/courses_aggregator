@@ -4,10 +4,24 @@
     <a href="{{ i.get_absolute_url }}">{{ i }}</a>
 {% endfor %}<br>
 {{ instance.spec }}<br>
-Рейтинг школы:{{ instance.rating }}<br>
+Рейтинг школы: {{ instance.rating }}<br>
 <h3>Доступные курсы:</h3>
 <ul>
 {% for course in instance.courses.all %}
     <li><a href="{{ course.get_absolute_url }}">{{ course }}</a></li>
 {% endfor %}
 </ul>
+<div class="container-fluid" id="reviews">
+<h4>Отзывы</h4><br>
+{% if instance.schoolreview_set.all %}
+    {% for review in instance.schoolreview_set.all %}
+        <b>{{ review.owner }}</b><br>
+        Оценка: {{ review.rating }}<br>
+        {{ review.comment }}<br>
+        <small>{{ review.date }}</small><br>
+        <hr>
+    {% endfor %}
+{% else %}
+Пока нет отзывов
+{% endif %}
+</div>

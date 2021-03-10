@@ -40,7 +40,7 @@ class School(models.Model):
     logo = models.ImageField(upload_to='school', verbose_name='Логотип школы')
     school_spec = models.ManyToManyField(Specialization, verbose_name='Специализация школы', blank=True)
     desciption = models.TextField(verbose_name='Описание школы')
-    rating = models.IntegerField(default=5, verbose_name='Рейтинг')
+    rating = models.PositiveSmallIntegerField(default=5, verbose_name='Рейтинг')
     courses = models.ManyToManyField('Course', verbose_name='Список курсов', blank=True)
     slug = models.SlugField(unique=True, blank=True, null=True)
 
@@ -50,13 +50,11 @@ class School(models.Model):
     def rating_by_reviews(self):
         sum_of_reviews_rating = sum([r.rating for r in self.schoolreview_set.all()])
         number_of_reviews = len(self.schoolreview_set.all())
-        # return sum_of_reviews_rating / number_of_reviews
         self.rating = sum_of_reviews_rating / number_of_reviews
+        self.save()
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
-        # if self.schoolreview_set:
-        #     self.rating = self.rating_by_reviews()
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -77,9 +75,9 @@ class Course(models.Model):
     duration = models.IntegerField(verbose_name='Продолжительность мес.', blank=True, null=True)
     school_spec = models.ManyToManyField(Specialization, verbose_name='Специализация курса')
     course_description = models.TextField(verbose_name='Описание курса', blank=True)
-    # teachers
     diplome = models.BooleanField(verbose_name='Наличие диплома')
     course_programm = models.TextField(verbose_name='Программа курса')
+    rating = models.PositiveSmallIntegerField(verbose_name='Рейтинг курса', default=5)
     slug = models.SlugField(unique=True, blank=True, null=True)
 
     def __str__(self):
@@ -88,6 +86,12 @@ class Course(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
+
+    def rating_by_review(self):
+        sum_of_reviews_rating = sum([r.rating for r in self.coursereview_set.all()])
+        number_of_reviews = len(self.coursereview_set.all())
+        self.rating = sum_of_reviews_rating / number_of_reviews
+        self.save()
 
     def get_absolute_url(self):
         ct = self.__class__.__name__.lower()
@@ -100,8 +104,8 @@ class Course(models.Model):
 
 class Review(models.Model):
     owner = models.ForeignKey('UserProfile', on_delete=models.DO_NOTHING, verbose_name='Кто написал')
-    rating = models.IntegerField()
-    comment = models.CharField(max_length=1000)
+    rating = models.PositiveSmallIntegerField(default=5, verbose_name='Рейтинг')
+    comment = models.CharField(max_length=1000, verbose_name="Комментарий")
     date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -113,24 +117,34 @@ class Review(models.Model):
 
 class SchoolReview(Review):
     school_review = models.ForeignKey(School, on_delete=models.DO_NOTHING, verbose_name='какая школа')
-    
-    def save(self,*args,**kwargs):
+
+    def save(self, *args, **kwargs):
+        super(SchoolReview, self).save(*args, **kwargs)
         self.school_review.rating_by_reviews()
-        self.school_review.save()
-        return super(SchoolReview, self).save(*args,**kwargs)
+
+    def __str__(self):
+        return super().__str__() + str(self.school_review)
 
     class Meta:
         verbose_name = 'Отзыв о школе'
         verbose_name_plural = "Отзывы о школе"
-        
+        unique_together = [['owner','school_review']]
 
 
 class CourseReview(Review):
     course_review = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='какой курс')
 
+    def save(self, *args, **kwargs):
+        super(CourseReview, self).save(*args, **kwargs)
+        self.course_review.rating_by_review()
+
+    def __str__(self):
+        return super().__str__() + str(self.course_review)
+
     class Meta:
         verbose_name = 'Отзыв о курсе'
         verbose_name_plural = 'Отзывы о курсе'
+        unique_together = [['owner', 'course_review']]
 
 
 class UserProfile(models.Model):
