@@ -1,6 +1,11 @@
 from pathlib import Path
 import os
 
+try:
+    from .local_settings import *
+except ImportError:
+    from .prod_settings import *
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'uaiv!g_kq+5kerai0*8ojc_h%z&*-26w3q=u_hn_s8vd$j!99a'
@@ -53,17 +58,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'course_aggr.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'courses',
-        'USER': 'admin',
-        'PASSWORD': ' ',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
-}
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -89,14 +83,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR,'static_dev'),]
-STATIC_ROOT = os.path.join(BASE_DIR,'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
 
