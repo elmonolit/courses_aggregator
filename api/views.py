@@ -1,7 +1,9 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ViewSet
 
 from .serializers import *
 
+# class BaseViewSet(ViewSet):
+#     def get
 
 class SchoolsViewSet(ModelViewSet):
     queryset = School.objects.all()
