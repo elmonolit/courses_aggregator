@@ -1,0 +1,8 @@
+supervisor: couldn't chdir to /home/john/courses_aggregator # где проект: ENOENT
+supervisor: child process was not spawned
+supervisor: couldn't chdir to /home/john/courses_aggregator # где проект: ENOENT
+supervisor: child process was not spawned
+supervisor: couldn't chdir to /home/john/courses_aggregator # где проект: ENOENT
+supervisor: child process was not spawned
+supervisor: couldn't chdir to /home/john/courses_aggregator # где проект: ENOENT
+supervisor: child process was not spawned
